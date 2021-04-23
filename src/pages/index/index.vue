@@ -61,6 +61,38 @@
 				</view>
 			</view>
 		</view>
+		
+		<view class="guess-u-like page-block">
+			<view class="single-like-movie" v-for="(item,gindex) in guessULikeList">
+				<image :src="item.cover" mode="" class="like-movie"></image>
+				
+				<view class="movie-desc">
+					<view class="movie-title">
+						{{item.name}}
+					</view>
+					
+					<trail-star :innerScore = "item.score" showNumber = "0"></trail-star>
+					
+					<view class="movie-info">
+						{{item.basicInfo}}
+					</view>
+					
+					<view class="movie-info">
+						{{item.releaseDate}}
+					</view>
+				</view>
+				
+				<view class="movie-oper" @click="praiseMe" :data-gindex="gindex">
+					<image src="../../static/admit.png" mode="" class="praise-ico"></image>
+					<view class="praise-me">
+						点赞
+					</view>
+					<view class="praise-me animation-opacity" :animation="animationDataArr[gindex]">
+						+1
+					</view>
+				</view>
+			</view>
+		</view>
 		<!-- 猜你喜欢 End -->
 	</view>
 </template>
@@ -73,13 +105,29 @@
 				title: '这里是首页',
 				carouselPath:[],
 				hotPosterPath:[],
-				trailerPath:[]
+				trailerPath:[],
+				guessULikeList:[],
+				animationData:{},
+				animationDataArr:[]
 			}
 		},
-		async onLoad() {
-			this.getCarousel()
-			this.getHotPoster()
-			this.getPreviewVideo()
+		onLoad() {
+			this.refresh()
+			// 在页面创建时创建一个临时动画
+			this.animation = uni.createAnimation()
+		
+		},
+		onUnload() {
+			this.animationData = {}
+			this.animationDataArr = []
+		},
+		onPullDownRefresh() {
+			uni.showLoading({
+				mask:true
+			})
+			this.refresh()
+			// 在页面创建时创建一个临时动画
+			this.animation = uni.createAnimation()
 		},
 		methods: {
 			getCarousel() {
@@ -129,6 +177,47 @@
 					},
 					fail: () => {}
 				});
+			},
+			getGuessULike() {
+				uni.request({
+					url: this.Base_Url + '/index/guessULike',
+					method: 'POST',
+					data: {qq:"948845097"},
+					header:{'Content-type': 'application/x-www-form-urlencoded'},
+					success: res => {
+						if(res.data.status === 200){
+							this.guessULikeList = res.data.data
+						}
+					},
+					fail: () => {},
+					complete: () => {
+						uni.stopPullDownRefresh()
+						uni.hideLoading()
+					}
+				});
+			},
+			refresh() {
+				this.getCarousel()
+				this.getHotPoster()
+				this.getPreviewVideo()
+				this.getGuessULike()
+			},
+			praiseMe (e) {
+				var gindex = e.currentTarget.dataset.gindex;
+				this.animation.translateY(-70).opacity(1).step({
+					duration:300
+				});
+				// this.animationData = this.animation.export();
+				// this.animationDataArr[gindex] = this.animationData
+				this.$set(this.animationDataArr,gindex,this.animation.export())
+				setTimeout(function() {
+					this.animation.translateY(0).opacity(0).step({
+						duration:0
+					})
+					// this.animationData = this.animation.export();
+					// this.animationDataArr[gindex] = this.animationData
+					this.$set(this.animationDataArr,gindex,this.animation.export())
+				}.bind(this),400)
 			}
 		},
 		components:{
@@ -202,5 +291,66 @@
 		width: 350upx;
 		height: 220upx;
 		margin-top: 10upx;
+	}
+	.guess-u-like{
+		display: flex;
+		flex-direction: column;
+	}
+	.single-like-movie{
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		padding: 30upx 20upx;
+	}
+	.like-movie{
+		width: 180upx;
+		height: 240upx;
+		border-radius: 3%;
+	}
+	.movie-desc{
+		display: flex;
+		flex-direction: column;
+		width: 320upx;
+	}
+	.movie-title{
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	.movie-info{
+		color: #808080;
+		font-size: 14px;
+	}
+	/* 点赞css */
+	.movie-oper{
+		width: 140upx;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		border-left: dashed 2px #F1F1F1;
+	}
+	.movie-oper:active{
+		background: #F8F8F8;
+		/* opacity: .4; */
+		/* box-shadow: #C0C0C0; */
+	}
+	.praise-ico{
+		width: 60upx;
+		height: 60upx;
+		align-self: center;
+	}
+	.praise-ico:active{
+		background: #F8F8F8;
+		opacity: .4;
+		/* box-shadow: #C0C0C0; */
+	}
+	.praise-me{
+		font-size: 14px;
+		color:#a9d9ff;
+		align-self:center;
+	}
+	.animation-opacity{
+		font-weight: bold;
+		opacity: 0;
 	}
 </style>
