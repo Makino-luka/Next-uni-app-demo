@@ -3,7 +3,9 @@
 		<!-- 轮播图 Start -->
 		<swiper :indicator-dots="true" :autoplay="true" :interval="3000" :duration="1000" class="carousel" indicator-color="rgba(255,255,255,1)" indicator-active-color="rgba(20,20,20,0.3)">
 			<swiper-item v-for="(item) in carouselPath">
-				<image :src="item.image" mode=""></image>
+				<navigator open-type="navigate" :url="'../detail/detail?trailerId=' + item.movieId">
+					<image :src="item.image" mode=""></image>
+				</navigator>
 			</swiper-item>
 		</swiper>
 		<!-- 轮播图 End -->
@@ -21,7 +23,9 @@
 		 <scroll-view scroll-x="true" class="page-block hot">
 		 	<view class="single-poster" v-for="(item) in hotPosterPath">
 				<view class="poster-wapper">
-					<image :src="item.cover" mode="" class="poster"></image>
+					<navigator open-type="navigate" :url="'../detail/detail?trailerId=' + item.id">
+						<image :src="item.cover" mode="" class="poster"></image>
+					</navigator>
 					<view class="movie-name">
 						{{item.name}}
 					</view>
@@ -64,8 +68,9 @@
 		
 		<view class="guess-u-like page-block">
 			<view class="single-like-movie" v-for="(item,gindex) in guessULikeList">
-				<image :src="item.cover" mode="" class="like-movie"></image>
-				
+				<navigator open-type="navigate" :url="'../detail/detail?trailerId=' + item.id">
+					<image :src="item.cover" mode="" class="like-movie"></image>
+				</navigator>
 				<view class="movie-desc">
 					<view class="movie-title">
 						{{item.name}}

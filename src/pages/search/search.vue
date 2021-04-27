@@ -9,7 +9,9 @@
 		
 		<view class="movie-list page-block">
 			<view class="movie-wapper" v-for="(item,index) in searchList">
-				<image :src="item.cover" mode="" class="poster"></image>
+				<navigator :url="'../detail/detail?trailerId=' + item.id">
+					<image :src="item.cover" mode="" class="poster"></image>
+				</navigator>
 			</view>
 		</view>
 	</view>
@@ -66,7 +68,6 @@
 							this.page = res.data.data.page
 							// console.log(this.searchList)
 							this.totalPage = res.data.data.total
-							
 						}
 					},
 					fail: () => {},

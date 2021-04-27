@@ -7,6 +7,9 @@
 				"enablePullDownRefresh": true,
 				"app-plus": {
 					"titleNView": false
+				},
+				"mp-weixin":{
+					"titleNView": false
 				}
 			}
 		}
@@ -27,6 +30,22 @@
 				"enablePullDownRefresh": true
 			}
 
+		}
+		,{
+			"path" : "pages/detail/detail",
+			"style" :
+			{
+				"navigationBarTitleText": "详情",
+				"enablePullDownRefresh": true,
+				"app-plus": {
+					"titleNView": {
+						"type":"transparent",
+						"backgroundColor":"#000000",
+						"titleColor":"#ffffff"
+					}
+				}
+			}
+		
 		}
     ],
 	"globalStyle": {
